@@ -16,8 +16,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
     // Настройка таблицы
-    table = new QTableWidget(0, 3, this);
-    table->setHorizontalHeaderLabels({"Owner", "Date", "Cost"});
+    table = new QTableWidget(0, 4, this);
+    table->setHorizontalHeaderLabels({"Owner", "Date", "Colour", "Cost"});
     // Растягиваем столбцы на всю ширину
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     // Выделение только целыми строками (не отдельными ячейками)
@@ -47,12 +47,14 @@ void MainWindow::onAddClicked()
 
     QLineEdit *ownerEdit = new QLineEdit(&dialog);
     QLineEdit *dateEdit = new QLineEdit(&dialog);
+    QLineEdit *colourEdit = new QLineEdit(&dialog);
     QSpinBox *costSpin = new QSpinBox(&dialog);
     costSpin->setMaximum(1000000000);
     costSpin->setMinimum(1);
 
     form.addRow("Ownner:", ownerEdit);
     form.addRow("Date:", dateEdit);
+    form.addRow("Colour", colourEdit);
     form.addRow("Cost:", costSpin);
 
     // Кнопки Ок/Отмена
@@ -65,6 +67,7 @@ void MainWindow::onAddClicked()
     if (dialog.exec() == QDialog::Accepted) {
         RealEstate re(ownerEdit->text().toStdString(),
                       dateEdit->text().toStdString(),
+                      colourEdit->text().toStdString(),
                       costSpin->value());
         m_realEstates.push_back(re);
         updateTable();
@@ -93,6 +96,7 @@ void MainWindow::updateTable()
 
         table->setItem(row, 0, new QTableWidgetItem(QString::fromStdString(re.owner)));
         table->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(re.date)));
-        table->setItem(row, 2, new QTableWidgetItem(QString::number(re.cost)));
+        table->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(re.colour)));
+        table->setItem(row, 3, new QTableWidgetItem(QString::number(re.cost)));
     }
 }
