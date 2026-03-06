@@ -8,12 +8,20 @@
 #include <QSpinBox> // для чисел
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <QToolBar>
+#include <QFileDialog>
+#include <QFile>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
     resize(500, 300);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    toolBar = new QToolBar(this);
+    toolBar->addAction("Open File", this, &MainWindow::onFileClicked);
+    mainLayout->addWidget(toolBar);
 
     // Настройка таблицы
     table = new QTableWidget(0, 4, this);
@@ -36,6 +44,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 
     connect(btnAdd, &QPushButton::clicked, this, &MainWindow::onAddClicked);
     connect(btnRemove, &QPushButton::clicked, this, &MainWindow::onRemoveClicked);
+
+    QHBoxLayout *removeContainsLayout = new QHBoxLayout();
+    QPushButton *btnRemoveContains = new QPushButton("Remove what contains", this);
+    containsEdit = new QLineEdit(this);
+    removeContainsLayout->addWidget(btnRemoveContains);
+    removeContainsLayout->addWidget(containsEdit);
+    mainLayout->addLayout(removeContainsLayout);
+
+    connect(btnRemoveContains, &QPushButton::clicked, this, &MainWindow::onRemoveContainsClicked);
 }
 
 void MainWindow::onAddClicked()
@@ -99,4 +116,69 @@ void MainWindow::updateTable()
         table->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(re.colour)));
         table->setItem(row, 3, new QTableWidgetItem(QString::number(re.cost)));
     }
+}
+
+void MainWindow::onFileClicked() {
+    // 1. Получаем путь к файлу
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", "", "Text Files (*.txt)");
+
+    // Проверка: если пользователь закрыл окно выбора, ничего не делаем
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Error", "Could not open file");
+        return;
+    }
+
+    QTextStream in(&file);
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+
+        QStringList fields = line.split(",", Qt::SkipEmptyParts);
+
+        if (fields.size() >= 3) {
+            QString in_owner = fields[0].trimmed();
+            QString in_date  = fields[1].trimmed();
+            QString in_cost  = fields[2].trimmed();
+
+            RealEstate re(in_owner.toStdString(),
+                          in_date.toStdString(),
+                          in_cost.toInt());
+            m_realEstates.push_back(re);
+        }
+    }
+
+    file.close();
+    updateTable();
+}
+
+void MainWindow::onRemoveContainsClicked()
+{
+    QString filterText = containsEdit->text();
+
+    if (filterText.isEmpty()) {
+        QMessageBox::information(this, "Info", "Enter a date substring to remove");
+        return;
+    }
+
+    std::string target = filterText.toStdString();
+
+    // Используем идиому erase-remove для удаления элементов из вектора m_realEstates
+    m_realEstates.erase(
+        std::remove_if(m_realEstates.begin(), m_realEstates.end(),
+                       [&target](const RealEstate& re) {
+                           // Условие: если в строке date содержится искомая подстрока
+                           return re.date.find(target) != std::string::npos;
+                       }),
+        m_realEstates.end()
+        );
+
+    updateTable();
+
+    containsEdit->clear();
 }
