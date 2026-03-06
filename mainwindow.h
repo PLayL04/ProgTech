@@ -1,21 +1,34 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
+#include <QTableWidget>
+#include <QPushButton>
+#include <vector>
+#include "realestate.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
+class MainWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow() = default;
+
+private slots:
+    void onAddClicked();
+    void onRemoveClicked();
 
 private:
-    Ui::MainWindow *ui;
+    QTableWidget *table;
+    QPushButton *btnAdd;
+    QPushButton *btnRemove;
+
+    // Вектор для хранения всех добавленных экземпляров
+    std::vector<RealEstate> m_realEstates;
+
+    // Вспомогательный метод для обновления интерфейса
+    void updateTable();
 };
+
 #endif // MAINWINDOW_H
