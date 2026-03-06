@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
@@ -43,6 +44,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 
     connect(btnAdd, &QPushButton::clicked, this, &MainWindow::onAddClicked);
     connect(btnRemove, &QPushButton::clicked, this, &MainWindow::onRemoveClicked);
+
+    QHBoxLayout *removeContainsLayout = new QHBoxLayout();
+    QPushButton *btnRemoveContains = new QPushButton("Remove what contains", this);
+    containsEdit = new QLineEdit(this);
+    removeContainsLayout->addWidget(btnRemoveContains);
+    removeContainsLayout->addWidget(containsEdit);
+    mainLayout->addLayout(removeContainsLayout);
+
+    connect(btnRemoveContains, &QPushButton::clicked, this, &MainWindow::onRemoveContainsClicked);
 }
 
 void MainWindow::onAddClicked()
@@ -141,4 +151,30 @@ void MainWindow::onFileClicked() {
 
     file.close();
     updateTable();
+}
+
+void MainWindow::onRemoveContainsClicked()
+{
+    QString filterText = containsEdit->text();
+
+    if (filterText.isEmpty()) {
+        QMessageBox::information(this, "Info", "Enter a date substring to remove");
+        return;
+    }
+
+    std::string target = filterText.toStdString();
+
+    // Используем идиому erase-remove для удаления элементов из вектора m_realEstates
+    m_realEstates.erase(
+        std::remove_if(m_realEstates.begin(), m_realEstates.end(),
+                       [&target](const RealEstate& re) {
+                           // Условие: если в строке date содержится искомая подстрока
+                           return re.date.find(target) != std::string::npos;
+                       }),
+        m_realEstates.end()
+        );
+
+    updateTable();
+
+    containsEdit->clear();
 }

@@ -20,12 +20,14 @@ private slots:
     void onAddClicked();
     void onRemoveClicked();
     void onFileClicked();
+    void onRemoveContainsClicked();
 
 private:
     QToolBar *toolBar;
     QTableWidget *table;
     QPushButton *btnAdd;
     QPushButton *btnRemove;
+    QLineEdit *containsEdit;
 
     // Вектор для хранения всех добавленных экземпляров
     std::vector<RealEstate> m_realEstates;
