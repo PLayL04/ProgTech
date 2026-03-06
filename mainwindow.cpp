@@ -8,12 +8,18 @@
 #include <QSpinBox> // для чисел
 #include <QDialogButtonBox>
 #include <QMessageBox>
+#include <QToolBar>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
     resize(500, 300);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    toolBar = new QToolBar(this);
+    toolBar->addAction("Open File", this, &MainWindow::onFileClicked);
+    mainLayout->addWidget(toolBar);
 
     // Настройка таблицы
     table = new QTableWidget(0, 3, this);
@@ -95,4 +101,8 @@ void MainWindow::updateTable()
         table->setItem(row, 1, new QTableWidgetItem(QString::fromStdString(re.date)));
         table->setItem(row, 2, new QTableWidgetItem(QString::number(re.cost)));
     }
+}
+
+void MainWindow::onFileClicked() {
+
 }
