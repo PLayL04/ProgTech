@@ -144,10 +144,12 @@ void MainWindow::onFileClicked() {
         if (fields.size() >= 3) {
             QString in_owner = fields[0].trimmed();
             QString in_date  = fields[1].trimmed();
-            QString in_cost  = fields[2].trimmed();
+            QString in_colour = fields[2].trimmed();
+            QString in_cost  = fields[3].trimmed();
 
             RealEstate re(in_owner.toStdString(),
                           in_date.toStdString(),
+                          in_colour.toStdString(),
                           in_cost.toInt());
             m_realEstates.push_back(re);
         }

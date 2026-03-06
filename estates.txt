@@ -1,5 +1,5 @@
-vasya,2020,1000
-petya,2019,2500
-Vanya,2020,1800
-Kostya,2018,1600
-sasha,2020,1900
+vasya,2020,blue,1000
+petya,2019,red,2500
+Vanya,2020,green,1800
+Kostya,2018,orange,1600
+sasha,2020,purple,1900
