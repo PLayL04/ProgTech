@@ -1,3 +1,16 @@
+#include "mainwindow.h"
+
+#include <QApplication>
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
+
+/*
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -63,30 +76,29 @@ RealEstate parseRealEstate(const string& textData) {
 }
 
 vector<RealEstate> sortRealEstateByCost(vector<RealEstate>& objects) {
-    /*
-     * Внешний цикл отвечает за количество проходов по массиву
-     * Если текущий объект стоит больше, чем следующий
-     * Меняем их местами.
-     */
-    int n = objects.size();
-    //
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (objects[j].cost > objects[j + 1].cost) {
-                // Функция swap — стандартный инструмент C++ для обмена значений переменных.
-                swap(objects[j], objects[j + 1]);
-            }
+    // Внешний цикл отвечает за количество проходов по массиву
+    // Если текущий объект стоит больше, чем следующий
+    // Меняем их местами.
+
+int n = objects.size();
+
+for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < n - i - 1; j++) {
+        if (objects[j].cost > objects[j + 1].cost) {
+            // Функция swap — стандартный инструмент C++ для обмена значений переменных.
+            swap(objects[j], objects[j + 1]);
         }
     }
+}
 
-    return objects; // Возвращаем измененный массив
+return objects; // Возвращаем измененный массив
 }
 
 
 
 int main() {
     // Поддержка русского языка в консоли (для Windows)
-    // setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "Russian");
 
     RealEstate house1("Иванов Иван Иванович", "2026.02.20", 10);
     RealEstate house2("Гадя Петрович Хренова", "2025.02.21", 20);
@@ -108,3 +120,4 @@ int main() {
 
     return 0;
 }
+*/
