@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QToolBar>
 #include <QFileDialog>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
@@ -104,5 +105,40 @@ void MainWindow::updateTable()
 }
 
 void MainWindow::onFileClicked() {
+    // 1. Получаем путь к файлу
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", "", "Text Files (*.txt)");
 
+    // Проверка: если пользователь закрыл окно выбора, ничего не делаем
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Error", "Could not open file");
+        return;
+    }
+
+    QTextStream in(&file);
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+
+        QStringList fields = line.split(",", Qt::SkipEmptyParts);
+
+        if (fields.size() >= 3) {
+            QString in_owner = fields[0].trimmed();
+            QString in_date  = fields[1].trimmed();
+            QString in_cost  = fields[2].trimmed();
+
+            RealEstate re(in_owner.toStdString(),
+                          in_date.toStdString(),
+                          in_cost.toInt());
+            m_realEstates.push_back(re);
+        }
+    }
+
+    file.close();
+    updateTable();
 }
