@@ -5,8 +5,7 @@
 #include <QTableWidget>
 #include <QPushButton>
 #include <QToolBar>
-#include <vector>
-#include "realestate.h"
+#include "estatemanager.h"
 
 class MainWindow : public QWidget
 {
@@ -30,7 +29,7 @@ private:
     QLineEdit *containsEdit;
 
     // Вектор для хранения всех добавленных экземпляров
-    std::vector<RealEstate> m_realEstates;
+    EstateManager m_manager;
 
     // Вспомогательный метод для обновления интерфейса
     void updateTable();

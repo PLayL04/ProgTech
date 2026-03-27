@@ -10,9 +10,10 @@ public:
     // Конструктор по умолчанию
     EstateManager();
 
-    // Остальные методы (добавление, удаление, загрузка)
+    // Остальные методы (добавление, удалm_ение, загрузка)
     void addEstate(const RealEstate& re);
     void removeContainsDate(const std::string& target);
+    void removeEstate(const int& target);
     const std::vector<RealEstate>& getEstates() const;
 
 private:

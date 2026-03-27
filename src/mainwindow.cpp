@@ -11,7 +11,6 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>
-#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
@@ -86,7 +85,7 @@ void MainWindow::onAddClicked()
                       dateEdit->text().toStdString(),
                       colourEdit->text().toStdString(),
                       costSpin->value());
-        m_realEstates.push_back(re);
+        m_manager.addEstate(re);
         updateTable();
     }
 }
@@ -96,7 +95,7 @@ void MainWindow::onRemoveClicked()
     int currentRow = table->currentRow();
     if (currentRow >= 0) {
         // Удаляем из вектора и обновляем таблицу
-        m_realEstates.erase(m_realEstates.begin() + currentRow);
+        m_manager.removeEstate(currentRow);
         updateTable();
     } else {
         QMessageBox::warning(this, "Err", "Row not selected");
@@ -107,7 +106,7 @@ void MainWindow::updateTable()
 {
     table->setRowCount(0);
 
-    for (const auto& re : m_realEstates) {
+    for (const auto& re : m_manager.getEstates()) {
         int row = table->rowCount();
         table->insertRow(row);
 
@@ -151,7 +150,7 @@ void MainWindow::onFileClicked() {
                           in_date.toStdString(),
                           in_colour.toStdString(),
                           in_cost.toInt());
-            m_realEstates.push_back(re);
+            m_manager.addEstate(re);
         }
     }
 
@@ -171,14 +170,16 @@ void MainWindow::onRemoveContainsClicked()
     std::string target = filterText.toStdString();
 
     // Используем идиому erase-remove для удаления элементов из вектора m_realEstates
-    m_realEstates.erase(
+    /* m_realEstates.erase(
         std::remove_if(m_realEstates.begin(), m_realEstates.end(),
                        [&target](const RealEstate& re) {
                            // Условие: если в строке date содержится искомая подстрока
                            return re.date.find(target) != std::string::npos;
                        }),
         m_realEstates.end()
-        );
+        ); */
+
+    m_manager.removeContainsDate(target);
 
     updateTable();
 

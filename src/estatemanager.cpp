@@ -29,3 +29,7 @@ void EstateManager::removeContainsDate(const std::string& target) {
         m_realEstates.end()
         );
 }
+
+void EstateManager::removeEstate(const int& target) {
+    m_realEstates.erase(m_realEstates.begin() + target);
+}
