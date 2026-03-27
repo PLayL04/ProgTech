@@ -21,5 +21,3 @@ test::~test() = default;
 void test::test_case1() {}
 
 QTEST_APPLESS_MAIN(test)
-
-#include "tst_test.moc"
