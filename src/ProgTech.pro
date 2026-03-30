@@ -12,11 +12,13 @@ SOURCES += \
     estatemanager.cpp \
     main.cpp \
     mainwindow.cpp \
+    parser.cpp \
     realestate.cpp
 
 HEADERS += \
     estatemanager.h \
     mainwindow.h \
+    parser.h \
     realestate.h
 
 FORMS +=

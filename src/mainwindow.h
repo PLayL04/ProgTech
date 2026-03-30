@@ -17,6 +17,7 @@ public:
 
 private slots:
     void onAddClicked();
+    void onCommandClicked();
     void onRemoveClicked();
     void onFileClicked();
     void onRemoveContainsClicked();

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#
 #include "realestate.h" // Используем ваш существующий класс
 
 class EstateManager {
@@ -15,6 +16,7 @@ public:
     void removeContainsDate(const std::string& target);
     void removeEstate(const int& target);
     const std::vector<RealEstate>& getEstates() const;
+    void saveToFile(const std::string& filename) const;
 
 private:
     std::vector<RealEstate> m_realEstates;

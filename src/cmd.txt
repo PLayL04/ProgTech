@@ -1,0 +1,13 @@
+ADD ivan;2025;red;55000
+ADD vasya;2020;blue;5400
+REM sum < 40000
+REM
+REM sum 
+REM sum < 
+REM sum < fgfdgd
+REM fgdgd
+ADD hhgfg vhvhv;2025;red;55
+ADD deldel vhvhv;ghgfhfghf;;55
+ADD deldel2 vhvhv;ghgfhfghf;;hfdhfd
+ADD deldel3 vhvhv;ghgfhfghf;;
+SAVE from_cmd.txt

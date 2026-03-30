@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>
+#include "parser.h"
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 {
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 
     toolBar = new QToolBar(this);
     toolBar->addAction("Open File", this, &MainWindow::onFileClicked);
+    toolBar->addAction("Open Command File", this, &MainWindow::onCommandClicked);
     mainLayout->addWidget(toolBar);
 
     // Настройка таблицы
@@ -27,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     table->setHorizontalHeaderLabels({"Owner", "Date", "Colour", "Cost"});
     // Растягиваем столбцы на всю ширину
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    // Выделение только целыми строками (не отдельными ячейками)
+    // Выделение только целыми строками
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers); // Запрет на редактирование прямо в ячейках
     mainLayout->addWidget(table);
@@ -94,7 +96,6 @@ void MainWindow::onRemoveClicked()
 {
     int currentRow = table->currentRow();
     if (currentRow >= 0) {
-        // Удаляем из вектора и обновляем таблицу
         m_manager.removeEstate(currentRow);
         updateTable();
     } else {
@@ -115,6 +116,22 @@ void MainWindow::updateTable()
         table->setItem(row, 2, new QTableWidgetItem(QString::fromStdString(re.colour)));
         table->setItem(row, 3, new QTableWidgetItem(QString::number(re.cost)));
     }
+}
+
+void MainWindow::onCommandClicked() {
+    QString filename = QFileDialog::getOpenFileName(this, "Open Command File", "", "Text Files (*.txt)");
+    if (filename.isEmpty()) {
+        return;
+    }
+
+    try {
+        Parser parser(&m_manager);
+        parser.processFile(filename);
+    } catch (...) {
+        return;
+    }
+
+    updateTable();
 }
 
 void MainWindow::onFileClicked() {
@@ -168,16 +185,6 @@ void MainWindow::onRemoveContainsClicked()
     }
 
     std::string target = filterText.toStdString();
-
-    // Используем идиому erase-remove для удаления элементов из вектора m_realEstates
-    /* m_realEstates.erase(
-        std::remove_if(m_realEstates.begin(), m_realEstates.end(),
-                       [&target](const RealEstate& re) {
-                           // Условие: если в строке date содержится искомая подстрока
-                           return re.date.find(target) != std::string::npos;
-                       }),
-        m_realEstates.end()
-        ); */
 
     m_manager.removeContainsDate(target);
 
